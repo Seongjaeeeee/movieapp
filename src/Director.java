@@ -1,5 +1,9 @@
+import java.util.ArrayList;
+
 public class Director{
     String name;
+    ArrayList<Movie> filmography = new ArrayList<>();
+
     public Director(String name){
         this.name = name;   
     }
@@ -7,19 +11,19 @@ public class Director{
     public String getName(){
         return name;   
     }
-
+    public void addMovie(Movie movie){
+        filmography.add(movie);
+    }
     @Override
     public String toString() {
         return "Director{name='" + name + "'}";
     }
-
     public boolean equals(Object o){
         if(this == o) return true;
         if(o == null || getClass() != o.getClass()) return false;
         Director director = (Director) o;
         return name.equals(director.name);
     }
-
     public int hashCode(){
         return name.hashCode();
     }

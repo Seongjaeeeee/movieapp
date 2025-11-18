@@ -15,7 +15,7 @@ public class Admin{
         movieList.addMovie(name,director,actor);
     }
 
-    public void printAllMovies() {
+    public void printMovies() {
         System.out.println("=== 최종 영화 목록 ===");
         movieList.printAll(); 
     }
