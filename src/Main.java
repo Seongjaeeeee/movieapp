@@ -3,6 +3,11 @@ public class Main {
         System.out.print("Movie app start!");
         Admin admin = new Admin();
         admin.createMovie("interstella","nolan","me");
+        admin.createMovie("dunkerk","nolan","me");
+        admin.createMovie("panthim","pta","you");
+        admin.printMovies();
+        admin.deleteMovie(1L);
+        admin.deleteMovie(5L);
         admin.printMovies();
     }
 }

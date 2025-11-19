@@ -19,4 +19,8 @@ public class Admin{
         System.out.println("=== 최종 영화 목록 ===");
         movieList.printAll(); 
     }
-}
+
+    public void deleteMovie(Long movieId){
+        movieList.removeMovie(movieId);
+    }
+} 

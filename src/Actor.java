@@ -1,29 +1,32 @@
 import java.util.ArrayList;
+import java.util.Objects;
 public class Actor{
-    String name;
-    ArrayList<Movie> filmography = new ArrayList<>();
+    private Long id;
+    private String name;
+    private ArrayList<Movie> filmography = new ArrayList<>();
 
-    public Actor(String name){
+    public Actor(Long id, String name){
+        this.id = id;
         this.name = name;
     }
 
-    public String getName(){
-        return name;
-    }
     public void addMovie(Movie movie){
         filmography.add(movie);
     }
+    public String getName(){
+        return this.name;
+    }
     @Override
     public String toString() {
-        return "Actor{name='" + name + "'}";
+        return "Actor{id=" + id + ", name='" + name + "'}";
     }
     public boolean equals(Object o){
         if(this == o) return true;
         if(o == null || getClass() != o.getClass()) return false;
         Actor actor = (Actor) o;
-        return name.equals(actor.name);
+        return id.equals(actor.id);
     }
     public int hashCode(){
-        return name.hashCode();
+        return Objects.hash(id);
     }
 }

@@ -2,11 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DirectorList{
-    List<Director> directors = new ArrayList<>();
+    private Long idnumber=1L;
+    private List<Director> directors = new ArrayList<>();
     public Director returnDirector(String directorName){
         Director director = directors.stream().filter(d -> d.getName().equals(directorName)).findFirst().orElse(null);
         if(director == null){
-            director = new Director(directorName);
+            director = new Director(idnumber++,directorName);
             directors.add(director);         
         }
         return director;        
