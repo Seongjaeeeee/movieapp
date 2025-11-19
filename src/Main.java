@@ -5,6 +5,7 @@ public class Main {
         admin.createMovie("interstella","nolan","me");
         admin.createMovie("dunkerk","nolan","me");
         admin.createMovie("panthim","pta","you");
+        admin.createMovie("panthim2","pta","me");
         admin.printMovies();
         admin.deleteMovie(1L);
         admin.deleteMovie(5L);

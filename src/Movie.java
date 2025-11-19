@@ -14,6 +14,9 @@ public class Movie{
         this.createMovie();
     }
     
+    public boolean isSameMovie(Long id){
+        return this.id.equals(id);
+    }
     public Long getId(){
         return this.id;
     }

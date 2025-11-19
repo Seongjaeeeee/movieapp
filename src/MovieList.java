@@ -16,7 +16,7 @@ public class MovieList{
     }
 
     public void removeMovie(Long id){
-        Movie targetMovie = movies.stream().filter(m -> m.getId().equals(id)).findFirst().orElse(null);
+        Movie targetMovie = movies.stream().filter(m -> m.isSameMovie(id)).findFirst().orElse(null);
         if(targetMovie==null)System.out.println("is not present");
         else movies.remove(targetMovie);
     }

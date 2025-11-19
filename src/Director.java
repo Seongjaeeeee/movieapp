@@ -11,8 +11,8 @@ public class Director{
         this.name = name;   
     }
 
-    public String getName(){
-        return this.name;
+    public boolean isSameDirector(String directorName){
+        return this.name.equals(directorName);
     }
     public void addMovie(Movie movie){
         filmography.add(movie);

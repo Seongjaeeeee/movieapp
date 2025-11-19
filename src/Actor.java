@@ -13,8 +13,8 @@ public class Actor{
     public void addMovie(Movie movie){
         filmography.add(movie);
     }
-    public String getName(){
-        return this.name;
+    public boolean isSameActor(String actorName){
+        return this.name.equals(actorName);
     }
     @Override
     public String toString() {
