@@ -1,23 +1,25 @@
 import java.util.ArrayList;
 import java.util.List;
-
+import java.time.LocalDate;
 public class MovieList{
-    private List<Movie> movies = new ArrayList<>();
     private Long idnumber = 1L;
-    public void addMovie(String movieName, Director director, Actor actor){
-        Movie movie = new Movie(idnumber++,movieName, director, actor);
+    private List<Movie> movies = new ArrayList<>();
+    
+    public Movie create(String movieName, Director director, Genre genre,LocalDate releaseDate,String description,List<Actor> actors){
+        return new Movie(idnumber++, movieName, director, genre, releaseDate, description, actors);
+    }
+    public void save(Movie movie){
         movies.add(movie);
     }
-
-    public void printAll(){
-        for(Movie m:movies){
-            System.out.println(m);
-        }
+    public void remove(Movie movie){
+        movies.remove(movie);
+    }
+    public List<Movie> get(){
+        return movies;
     }
 
-    public void removeMovie(Long id){
-        Movie targetMovie = movies.stream().filter(m -> m.isSameMovie(id)).findFirst().orElse(null);
-        if(targetMovie==null)System.out.println("is not present");
-        else movies.remove(targetMovie);
+    public Movie find(Long id){
+        return movies.stream().filter(m -> m.isSameMovie(id)).findFirst().orElse(null);
     }
+
 }

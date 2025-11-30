@@ -1,28 +1,41 @@
+import java.time.LocalDate;
 import java.util.Objects;
-
+import java.util.ArrayList;
+import java.util.List;
 public class Movie{
     private Long id;
     private String name;
     private Director director;
-    private Actor actor;
+    private List<Actor> actors = new ArrayList<>();
+    private Genre genre;
+    private String description;
+    private LocalDate releaseDate;
 
-    public Movie(Long id, String name, Director director, Actor actor){
+    public Movie(Long id, String name, Director director, Genre genre,LocalDate releaseDate,String description, List<Actor> actors){
         this.id =id;
         this.name = name;
         this.director = director;
-        this.actor = actor;
-        this.createMovie();
+        this.genre = genre;
+        this.releaseDate = releaseDate;
+        this.description = description;
+        this.actors.addAll(actors);
+        this.connectMovie();
     }
     
     public boolean isSameMovie(Long id){
         return this.id.equals(id);
     }
-    public Long getId(){
-        return this.id;
-    }
     @Override
     public String toString() {
-        return "Movie{id=" + id + ", name='" + name + "', director=" + director + ", actor=" + actor + "}";
+        return "Movie{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", director=" + director +
+            ", genre=" + genre +
+            ", releaseDate=" + releaseDate +
+            ", description='" + description + '\'' +
+            ", actors=" + actors +
+            '}';
     }
     public boolean equals(Object o){
         if(this == o) return true;
@@ -33,9 +46,13 @@ public class Movie{
     public int hashCode(){
         return Objects.hash(id);
     }
+    public void removeConnection(){
+        for(Actor actor: actors) actor.removeMovie(this);
+        director.removeMovie(this);
+    }
 
-    private void createMovie(){
+    private void connectMovie(){
         director.addMovie(this);
-        actor.addMovie(this);
+        for(Actor actor: actors) actor.addMovie(this);
     }
 }

@@ -13,6 +13,9 @@ public class Actor{
     public void addMovie(Movie movie){
         filmography.add(movie);
     }
+    public void removeMovie(Movie movie){
+        filmography.remove(movie);
+    }
     public boolean isSameActor(String actorName){
         return this.name.equals(actorName);
     }

@@ -17,6 +17,9 @@ public class Director{
     public void addMovie(Movie movie){
         filmography.add(movie);
     }
+    public void removeMovie(Movie movie){
+        filmography.remove(movie);
+    }
     @Override
     public String toString() {
         return "Director{id=" + id + ", name='" + name + "'}";
