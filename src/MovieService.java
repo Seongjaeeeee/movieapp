@@ -34,17 +34,26 @@ public class MovieService{
             movieList.remove(movie);
         }
     }
-/* 
-    public void changeMovieName(Long id,String name){
-        //movieList.updateMovieName(Long id,String name);
-    }
-    public void changeMovieGenre(Long id,String name)
-    public void changeMovieDate(Long id,String name)
-    public void changeMovieDirector(Long id,String name)
-    public void deleteMovieActor(Long id,String name)
-    public void addMovieActor(Long id,String name){
 
+    public void changeMovieDetail(Long id,MovieParam param){
+        Movie movie = movieList.find(id);
+        movie.changeAttribute(param);
     }
-    //public void */
+    public void changeMovieDirector(Long id,String directorName){
+        Movie movie = movieList.find(id);
+        Director director = directorService.returnDirector(directorName);
+        movie.changeDirector(director);
+    }
+    public void deleteMovieActor(Long id,String name){
+        Movie movie = movieList.find(id);
+        Actor actor = actorService.returnActor(name);
+        movie.deleteActor(actor);
+    }
+    public void addMovieActor(Long id,String name){
+        Movie movie = movieList.find(id);
+        Actor actor = actorService.returnActor(name);
+        movie.addActor(actor);
+    }
+    
 
 } 

@@ -25,6 +25,42 @@ public class Movie{
     public boolean isSameMovie(Long id){
         return this.id.equals(id);
     }
+    
+    public void removeConnection(){
+        for(Actor actor: actors) actor.removeMovie(this);
+        director.removeMovie(this);
+    }
+
+    public void changeAttribute(MovieParam param){
+        if(param.getName()!=null)this.name=param.getName();
+        if(param.getGenre()!=null)this.genre=param.getGenre();
+        if(param.getReleaseDate()!=null)this.releaseDate=param.getReleaseDate();
+        if(param.getDescription()!=null)this.description=param.getDescription();
+    }
+    public void changeDirector(Director director){
+        director.removeMovie(this);
+        director.addMovie(this);
+        this.director = director;
+    }
+    public void deleteActor(Actor actor){
+        boolean isExist = actors.contains(actor);
+        if(isExist==false) return;
+        actor.removeMovie(this);
+        actors.remove(actor);
+    }
+    public void addActor(Actor actor){
+        boolean isExist = actors.contains(actor);
+        if(isExist) return;
+        actor.addMovie(this);
+        actors.add(actor);
+    }
+
+    private void connectMovie(){
+        director.addMovie(this);
+        for(Actor actor: actors) actor.addMovie(this);
+    }
+
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -45,14 +81,5 @@ public class Movie{
     }
     public int hashCode(){
         return Objects.hash(id);
-    }
-    public void removeConnection(){
-        for(Actor actor: actors) actor.removeMovie(this);
-        director.removeMovie(this);
-    }
-
-    private void connectMovie(){
-        director.addMovie(this);
-        for(Actor actor: actors) actor.addMovie(this);
     }
 }
