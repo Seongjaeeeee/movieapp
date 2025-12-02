@@ -1,10 +1,19 @@
 import java.util.Scanner;
+
+import domain.*;
+import dto.*;
+import service.*;
+
+
 import java.util.List;
 import java.time.LocalDate;
 public class MovieController {
     private MovieService movieService;
     private DirectorService directorService;
     private ActorService actorService;
+    private UserService userService;
+    private ReviewService reviewService;
+
     private Scanner scanner;
     public MovieController(MovieService movieService,DirectorService directorService,ActorService actorService){
         this.movieService=movieService;
@@ -12,6 +21,7 @@ public class MovieController {
         this.directorService=directorService;
         this.scanner = new Scanner(System.in); 
     }
+    
     public void start(){
         boolean isRunning=true;
         while(isRunning){

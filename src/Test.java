@@ -1,6 +1,11 @@
 import java.time.LocalDate;
+
+import domain.Genre;
+import service.MovieService;
+import service.ReviewService;
+import service.UserService;
 public class Test {
-    public void init(MovieService movieService) {
+    public void init(MovieService movieService, ReviewService reviewService, UserService userService) {
         movieService.createMovie("인셉션", "놀란", Genre.SF, LocalDate.of(2010,7,21), "설명", "디카프리오", "조셉");
         movieService.createMovie("범죄도시", "강윤성", Genre.ACTION, LocalDate.of(2017,10,3), "설명", "마동석", "윤계상");
         movieService.createMovie("오펜하이머","크리스토퍼 놀란",Genre.DRAMA,LocalDate.of(2023, 8, 15),"핵폭탄 개발 프로젝트의 비하인드 스토리", "킬리언 머피");
@@ -105,5 +110,18 @@ public class Test {
             "다니엘 크레이그", "크리스 에반스", "아나 데 아르마스"
         );
         System.out.println("📢 [테스트용 데이터가 생성되었습니다]");
+        // 첫 영화(id=1)에 리뷰 10개 추가 (간단한 테스트 데이터)
+        // 유저 10명 생성
+        for (int i = 1; i <= 10; i++) {
+            userService.createUser("user" + i, "password" + i);
+        }
+
+        // 리뷰 10개 생성 (userId: 1..10, movieId: 1)
+        Long movieId = 1L;
+        for (long userId = 1L; userId <= 10L; userId++) {
+            int star = (int) ((userId % 5) + 1); // 1~5
+            String content = "테스트 리뷰 #" + userId + " - 평점: " + star;
+            reviewService.createReview(content, star, userId, movieId);
+        }
     }
 }
