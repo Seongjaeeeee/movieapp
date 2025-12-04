@@ -6,11 +6,13 @@ public class Actor{
     private String name;
     private ArrayList<Movie> filmography = new ArrayList<>();
 
-    public Actor(Long id, String name){
-        this.id = id;
+    public Actor(String name){
         this.name = name;
     }
 
+    public void setId(Long id){
+        this.id=id;
+    }
     public void addMovie(Movie movie){
         filmography.add(movie);
     }

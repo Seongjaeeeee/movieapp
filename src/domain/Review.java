@@ -12,13 +12,12 @@ public class Review {
         this.movie = movie;
         this.user = user;
         this.star = star;
-        calculateMovieAverageStar();//이거 위험
     }
     public void setid(Long id){
         this.id=id;
     }
-    private void calculateMovieAverageStar(){
-        movie.calculateAverageStar(star);
+    public void updateAverageRating(){
+        movie.updateRating(star);
     }
 
 }

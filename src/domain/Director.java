@@ -7,11 +7,12 @@ public class Director{
     private String name;
     private ArrayList<Movie> filmography = new ArrayList<>();
 
-    public Director(Long id,String name){
-        this.id=id;
+    public Director(String name){
         this.name = name;   
     }
-
+    public void setId(Long id){
+        this.id=id;
+    }
     public boolean isSameDirector(String directorName){
         return this.name.equals(directorName);
     }

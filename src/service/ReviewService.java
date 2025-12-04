@@ -20,6 +20,7 @@ public class ReviewService {
         Movie movie = movieService.findMovie(movieId);
         User user = userService.findUser(userId);
         Review review = new Review(reviewDetail,star,movie,user);
+        review.updateAverageRating();
         reviewList.save(review);
 
     }

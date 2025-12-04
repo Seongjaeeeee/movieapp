@@ -1,21 +1,13 @@
 package list;
 import java.util.ArrayList;
 import java.util.List;
-
-import domain.Actor;
-import domain.Director;
-import domain.Genre;
 import domain.Movie;
-
-import java.time.LocalDate;
 public class MovieList{
-    private Long idnumber = 1L;
+    private Long id = 1L;
     private List<Movie> movies = new ArrayList<>();
     
-    public Movie create(String movieName, Director director, Genre genre,LocalDate releaseDate,String description,List<Actor> actors){
-        return new Movie(idnumber++, movieName, director, genre, releaseDate, description, actors);
-    }
     public void save(Movie movie){
+        movie.setId(id++);
         movies.add(movie);
     }
     public void remove(Movie movie){

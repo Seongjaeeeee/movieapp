@@ -10,7 +10,7 @@ public class DirectorService{
     public Director returnDirector(String directorName){
         Director director = directorList.find(directorName);
         if(director == null){
-            director = directorList.create(directorName);
+            director = new Director(directorName);
             directorList.save(director);         
         }
         return director;        

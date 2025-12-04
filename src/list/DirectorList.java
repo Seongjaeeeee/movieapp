@@ -11,11 +11,8 @@ public class DirectorList{
     public Director find(String directorName){
         return directors.stream().filter(d -> d.isSameDirector(directorName)).findFirst().orElse(null);
     }
-    public Director create(String directorName){
-        return new Director(idNumber++,directorName);
-    }
-
     public void save(Director director){
+        director.setId(idNumber++);
         directors.add(director);
     }
 }

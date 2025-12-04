@@ -26,17 +26,16 @@ public class MovieService{
         for(String actorName: actorNames){
             tempActors.add(actorService.returnActor(actorName));
         }
-        Movie movie = movieList.create(name,director, genre, releaseDate, description, tempActors);
+        Movie movie = new Movie(name,director, genre, releaseDate, description, tempActors);
+        movie.connectMovie();
         movieList.save(movie);
     }
-
     public List<Movie> getMovies(){
         return movieList.get();
     }
     public Movie findMovie(Long id){
         return movieList.find(id);
     }
-
     public void deleteMovie(Long movieId){
         Movie movie = movieList.find(movieId);
         if(movie==null)System.out.println("Movie is not present");
@@ -45,7 +44,6 @@ public class MovieService{
             movieList.remove(movie);
         }
     }
-
     public void changeMovieDetail(Long id,MovieParam param){
         Movie movie = movieList.find(id);
         movie.changeAttribute(param);

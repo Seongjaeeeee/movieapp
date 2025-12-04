@@ -10,7 +10,7 @@ public class ActorService {
     public Actor returnActor(String actorName){
         Actor actor = actorList.find(actorName);
         if(actor == null){
-            actor = actorList.create(actorName);
+            actor = new Actor(actorName);
             actorList.save(actor);         
         }
         return actor;        

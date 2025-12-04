@@ -119,7 +119,7 @@ public class Test {
         // 리뷰 10개 생성 (userId: 1..10, movieId: 1)
         Long movieId = 1L;
         for (long userId = 1L; userId <= 10L; userId++) {
-            int star = (int) ((userId % 5) + 1); // 1~5
+            int star =5; // (int) ((userId % 5) + 1); // 1~5
             String content = "테스트 리뷰 #" + userId + " - 평점: " + star;
             reviewService.createReview(content, star, userId, movieId);
         }
