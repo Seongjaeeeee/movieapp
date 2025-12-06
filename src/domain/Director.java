@@ -1,14 +1,16 @@
 package domain;
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Director{
     private Long id;
     private String name;
-    private ArrayList<Movie> filmography = new ArrayList<>();
 
     public Director(String name){
         this.name = name;   
+    }
+
+    public void changeName(String newName){
+        this.name = newName;
     }
     public void setId(Long id){
         this.id=id;
@@ -16,12 +18,7 @@ public class Director{
     public boolean isSameDirector(String directorName){
         return this.name.equals(directorName);
     }
-    public void addMovie(Movie movie){
-        filmography.add(movie);
-    }
-    public void removeMovie(Movie movie){
-        filmography.remove(movie);
-    }
+
     @Override
     public String toString() {
         return "Director{id=" + id + ", name='" + name + "'}";

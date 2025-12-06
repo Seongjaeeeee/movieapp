@@ -27,7 +27,6 @@ public class MovieService{
             tempActors.add(actorService.returnActor(actorName));
         }
         Movie movie = new Movie(name,director, genre, releaseDate, description, tempActors);
-        movie.connectMovie();
         movieList.save(movie);
     }
     public List<Movie> getMovies(){
@@ -38,31 +37,37 @@ public class MovieService{
     }
     public void deleteMovie(Long movieId){
         Movie movie = movieList.find(movieId);
-        if(movie==null)System.out.println("Movie is not present");
-        else {
-            movie.removeConnection();
-            movieList.remove(movie);
-        }
+        if(movie==null)return;
+        movieList.remove(movie);
     }
+
     public void changeMovieDetail(Long id,MovieParam param){
         Movie movie = movieList.find(id);
         movie.changeAttribute(param);
     }
-    public void changeMovieDirector(Long id,String directorName){
-        Movie movie = movieList.find(id);
-        Director director = directorService.returnDirector(directorName);
+    public void deleteActorInMovie(Actor actor){//해당 배우 나오는 영화에서 배우 삭제
+        List<Movie> tempList = movieList.findByActor(actor);
+        for(Movie movie:tempList){
+            movie.deleteActor(actor);
+        }
+    }
+    public void deleteDirectorInMovie(Director director){
+        List<Movie> tempList = movieList.findByDirector(director);
+        for(Movie movie:tempList){
+            movie.deleteDirector(director);
+        }
+    }
+    public void changeDirector(Movie movie, Director director) {
+        if (movie == null || director == null) return;
         movie.changeDirector(director);
     }
-    public void deleteMovieActor(Long id,String name){
-        Movie movie = movieList.find(id);
-        Actor actor = actorService.returnActor(name);
+    public void deleteActor(Movie movie, Actor actor) {
+        if (movie == null || actor == null) return;
         movie.deleteActor(actor);
     }
-    public void addMovieActor(Long id,String name){
-        Movie movie = movieList.find(id);
-        Actor actor = actorService.returnActor(name);
+    public void addActor(Movie movie, Actor actor) {
+        if (movie == null || actor == null) return;
         movie.addActor(actor);
     }
-    
 
 } 

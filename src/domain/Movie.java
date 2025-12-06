@@ -10,7 +10,7 @@ import dto.MovieParam;
 public class Movie{
     private Long id;
     private String name;
-    private Director director;
+    private Director director;//없으면 안됨
     private List<Actor> actors = new ArrayList<>();
     private Genre genre;
     private String description;
@@ -28,12 +28,18 @@ public class Movie{
         this.description = description;
         this.actors.addAll(actors);
     }
-    
+    public void setId(Long id){
+        this.id = id;
+    }
+
     public boolean isSameMovie(Long id){
         return this.id.equals(id);
     }
-    public void setId(Long id){
-        this.id = id;
+    public boolean isContainActor(Actor actor){
+        return actors.contains(actor);
+    }
+    public boolean isEqualDirector(Director director){
+        return this.director.equals(director);
     }
     
     public void changeAttribute(MovieParam param){
@@ -43,35 +49,25 @@ public class Movie{
         if(param.getDescription()!=null)this.description=param.getDescription();
     }
     public void changeDirector(Director director){
-        director.removeMovie(this);
-        director.addMovie(this);
         this.director = director;
-    }
-    public void deleteActor(Actor actor){
-        boolean isExist = actors.contains(actor);
-        if(isExist==false) return;
-        actor.removeMovie(this);
-        actors.remove(actor);
     }
     public void addActor(Actor actor){
         boolean isExist = actors.contains(actor);
         if(isExist) return;
-        actor.addMovie(this);
         actors.add(actor);
     }
-    
-    public void connectMovie(){
-        director.addMovie(this);
-        for(Actor actor: actors) actor.addMovie(this);
-    }
-    public void removeConnection(){
-        for(Actor actor: actors) actor.removeMovie(this);
-        director.removeMovie(this);
-    }
-
     public void updateRating(Integer star){
         ratingDistribution.put(star, ratingDistribution.getOrDefault(star, 0L) + 1);//getordefalult 찾아서 있으면 값,없으면 defalut값 반환
         rating = ratingPolicy.calculateRating(ratingDistribution);
+    }
+    
+    public void deleteDirector(Director director){
+        this.director = null;
+    }
+    public void deleteActor(Actor actor){
+        boolean isExist = actors.contains(actor);
+        if(isExist==false) return;
+        actors.remove(actor);
     }
 
     @Override

@@ -15,4 +15,10 @@ public class DirectorList{
         director.setId(idNumber++);
         directors.add(director);
     }
+    public void delete(Director director){
+        directors.remove(director);
+    }
+    public List<Director> get(){
+        return directors;
+    }
 }

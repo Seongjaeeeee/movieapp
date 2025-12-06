@@ -15,4 +15,10 @@ public class ActorList{
         actor.setId(idnumber++);
         actors.add(actor);
     }
+    public void delete(Actor actor){
+        actors.remove(actor);
+    }
+    public List<Actor> get(){
+        return actors;
+    }
 }

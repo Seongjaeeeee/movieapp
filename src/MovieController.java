@@ -13,34 +13,38 @@ public class MovieController {
     private ActorService actorService;
     private UserService userService;
     private ReviewService reviewService;
+    private MoviePersonPacadeService moviePersonPacadeService;
 
     private Scanner scanner;
-    public MovieController(MovieService movieService,DirectorService directorService,ActorService actorService){
-        this.movieService=movieService;
-        this.actorService=actorService;
-        this.directorService=directorService;
-        this.scanner = new Scanner(System.in); 
+    public MovieController(MovieService movieService, DirectorService directorService, ActorService actorService, UserService userService, ReviewService reviewService, MoviePersonPacadeService moviePersonPacadeService) {
+        this.movieService = movieService;
+        this.actorService = actorService;
+        this.directorService = directorService;
+        this.userService = userService;
+        this.reviewService = reviewService;
+        this.moviePersonPacadeService = moviePersonPacadeService;
+        this.scanner = new Scanner(System.in);
     }
     
     public void start(){
         boolean isRunning=true;
         while(isRunning){
             System.out.println("\n================================");
-            System.out.println("1. 영화 등록  2. 목록 조회  3. 영화 정보 수정  4. 영화 삭제  q. 종료");
+            System.out.println("1.등록  2. 검색  3. 수정  4. 삭제  q. 종료");
             System.out.print("명령 선택 > ");
             String command = scanner.nextLine();
             switch (command) {
                 case "1":
-                    createMovie();
+                    create();
                     break;
                 case "2":
-                    readMovies();
+                    read();
                     break;
                 case "3":
-                    updateMovie();
+                    update();
                     break;
                 case "4":
-                    deleteMovie();
+                    delete();
                     break;
                 case "q":
                     isRunning = false;
@@ -48,7 +52,29 @@ public class MovieController {
             }
         }
     }
-
+////////////////////////////////////////////////////////////////////////////////create
+    private void create() {
+    System.out.println("=== 데이터 등록 메뉴 ===");
+    System.out.println("1.영화 등록 2.배우 등록 3.감독 등록 (그 외: 취소)");
+    String command = scanner.nextLine();
+    switch (command) {
+        case "1":
+            createMovie();
+            break;
+        
+        case "2":
+            createActor();
+            break;
+        
+        case "3":
+            createDirector(); 
+            break;
+        
+        default:
+            System.out.println("등록 메뉴를 종료합니다.");
+            break;
+        }
+    }
     private void createMovie(){
         System.out.println("\n--- 새 영화 등록 ---");
         
@@ -78,18 +104,76 @@ public class MovieController {
         System.out.println("✅ 등록되었습니다.");
     }
 
-    private void readMovies(){
+    private void createActor() {
+        System.out.print("등록할 배우 이름을 입력하세요: ");
+        String name = scanner.nextLine();
+        actorService.createActor(name); 
+    }
+
+    private void createDirector() {
+        System.out.print("등록할 감독 이름을 입력하세요: ");
+        String name = scanner.nextLine();
+        directorService.createDirector(name);
+    }
+//////////////////////////////////////////////////////////////////////////////read
+    private void read(){
+        System.out.println("1.영화 조회 2.배우 조회 3.감독 조회");
+        String command = scanner.nextLine();
+        switch (command) {
+            case "1":
+                readMovie();
+                break;
+            
+            case "2":
+                readActor();
+                break;
+            
+            case "3":
+                readDirector();
+                break;
+            
+            default:
+                break;
+        }
+    }
+
+    private void readMovie(){
         List<Movie> Movies = movieService.getMovies();
         for(Movie movie: Movies) System.out.println(movie);
         System.out.println("✅ 전체 영화 목록이 출력되었습니다.");
     }
-
-    private void deleteMovie(){
-        System.out.println("영화 id를 입력하세요: ");
-        Long id = Long.valueOf(scanner.nextLine());
-        movieService.deleteMovie(id);
+    private void readActor(){
+        List<Actor> actors = actorService.getActors();
+        for(Actor actor: actors) System.out.println(actor);
+        System.out.println("✅ 전체 배우 목록이 출력되었습니다.");
+    }
+    private void readDirector(){
+        List<Director> directors = directorService.getDirectors();
+        for(Director director: directors) System.out.println(director);
+        System.out.println("✅ 전체 감독 목록이 출력되었습니다.");
     }
 
+/////////////////////////////////////////////////update
+    private void update(){
+        System.out.println("1.영화 수정 2.배우 수정 3.감독 수정");
+        String command = scanner.nextLine();
+        switch (command) {
+            case "1":
+                updateMovie();
+                break;
+            
+            case "2":
+                updateActor();
+                break;
+            
+            case "3":
+                updateDirector();
+                break;
+            
+            default:
+                break;
+        }
+    }
     private void updateMovie(){
         System.out.println("\n--- 영화 정보 수정 ---");
         System.out.println("1. 영화 상세정보 수정  2. 감독 수정  3. 배우 목록 수정");
@@ -100,11 +184,11 @@ public class MovieController {
                 break;
             
             case "2" :
-                //movieDirectorUpdate();
+                movieDirectorUpdate();
                 break;
 
             case "3":
-                //movieActorsUpdate();
+                movieActorsUpdate();
                 break;
         }
     }
@@ -138,7 +222,141 @@ public class MovieController {
         MovieParam parameter = new MovieParam(name,genre,description,date);
         movieService.changeMovieDetail(id,parameter);
     }
-        
+    private void movieDirectorUpdate(){
+        System.out.println("\n[감독 수정]");
+        System.out.print("대상 영화 ID 입력: ");
+        try {
+            Long id = Long.valueOf(scanner.nextLine());
+
+            System.out.print("변경할 감독 이름 입력: ");
+            String directorName = scanner.nextLine();
+            if (directorName.isBlank()) {
+                System.out.println("감독 이름은 비어있을 수 없습니다. 취소합니다.");
+                return;
+            }
+
+            // Facade 메서드 호출
+            moviePersonPacadeService.changeMovieDirector(id, directorName);
+            System.out.println("감독 변경이 완료되었습니다.");
+
+        } catch (NumberFormatException e) {
+            System.out.println("ID는 숫자여야 합니다.");
+        } catch (Exception e) {
+            System.out.println("오류 발생: " + e.getMessage());
+        }
+    }
+
+    // 3. 배우 목록 수정 (추가/삭제 분기 처리)
+    private void movieActorsUpdate(){
+        System.out.println("\n[배우 목록 수정]");
+        System.out.print("대상 영화 ID 입력: ");
+        try {
+            Long id = Long.valueOf(scanner.nextLine());
+
+            System.out.println("1. 배우 추가  2. 배우 삭제");
+            System.out.print("선택 >> ");
+            String subCommand = scanner.nextLine();
+
+            if (!subCommand.equals("1") && !subCommand.equals("2")) {
+                System.out.println("잘못된 선택입니다.");
+                return;
+            }
+
+            System.out.print("대상 배우 이름 입력: ");
+            String actorName = scanner.nextLine();
+            if (actorName.isBlank()) {
+                System.out.println("배우 이름은 비어있을 수 없습니다.");
+                return;
+            }
+
+            if (subCommand.equals("1")) {
+                // 배우 추가 Facade 호출
+                moviePersonPacadeService.addMovieActor(id, actorName);
+                System.out.println("배우 추가 완료.");
+            } else {
+                // 배우 삭제 Facade 호출
+                moviePersonPacadeService.deleteMovieActor(id, actorName);
+                System.out.println("배우 삭제 완료.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("ID는 숫자여야 합니다.");
+        } catch (Exception e) {
+            System.out.println("오류 발생: " + e.getMessage());
+        }
+    }
     
+
+private void updateActor() {
+        System.out.println("\n--- 배우 정보 수정 ---");
+        
+        System.out.print("수정할 배우의 현재 이름을 입력하세요: ");
+        String actorName = scanner.nextLine();
+        
+        System.out.print("변경할 새로운 이름을 입력하세요: ");
+        String newName = scanner.nextLine();
+        
+        actorService.updateActor(actorName, newName);
+    }
+
+    private void updateDirector() {
+        System.out.println("\n--- 감독 정보 수정 ---");
+        
+        System.out.print("수정할 감독의 현재 이름을 입력하세요: ");
+        String directorName = scanner.nextLine();
+        
+        System.out.print("변경할 새로운 이름을 입력하세요: ");
+        String newName = scanner.nextLine();
+        
+        directorService.updateDirector(directorName, newName);
+    }
+////////////////////////////////////////////////////////////////////////delete
+    private void delete() {
+        System.out.println("1.영화 삭제 2.배우 삭제 3.감독 삭제");
+        String command = scanner.nextLine();
+        switch (command) {
+            case "1":
+                deleteMovie();
+                break;
+            
+            case "2":
+                deleteActor();
+                break;
+            
+            case "3":
+                deleteDirector();
+                break;
+            
+            default:;
+                break;
+        }
+    }
+    private void deleteMovie(){
+        System.out.println("영화 id를 입력하세요: ");
+        Long id = Long.valueOf(scanner.nextLine());
+        movieService.deleteMovie(id);
+    }       
+
+    private void deleteActor() {
+        System.out.println("\n--- 배우 정보 삭제 ---");
+        
+        System.out.print("삭제할 배우 이름을 입력하세요: ");
+        String name = scanner.nextLine();
+        
+        moviePersonPacadeService.deleteActor(name);
+        
+        System.out.println("배우 삭제가 완료되었습니다.");
+    }
+
+    private void deleteDirector() {
+        System.out.println("\n--- 감독 정보 삭제 ---");
+        
+        System.out.print("삭제할 감독 이름을 입력하세요: ");
+        String name = scanner.nextLine();
+        
+        moviePersonPacadeService.deleteDirector(name);
+        
+        System.out.println("감독 삭제가 완료되었습니다.");
+    }
     
 }

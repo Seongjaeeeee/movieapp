@@ -1,11 +1,9 @@
 package domain;
-import java.util.ArrayList;
 import java.util.Objects;
 public class Actor{
     private Long id;
     private String name;
-    private ArrayList<Movie> filmography = new ArrayList<>();
-
+   
     public Actor(String name){
         this.name = name;
     }
@@ -13,11 +11,8 @@ public class Actor{
     public void setId(Long id){
         this.id=id;
     }
-    public void addMovie(Movie movie){
-        filmography.add(movie);
-    }
-    public void removeMovie(Movie movie){
-        filmography.remove(movie);
+    public void changeName(String newName){
+        this.name = newName;
     }
     public boolean isSameActor(String actorName){
         return this.name.equals(actorName);
