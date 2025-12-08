@@ -6,17 +6,17 @@ public class Director{
     private String name;
 
     public Director(String name){
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("이름은 필수입니다.");
+        }
         this.name = name;   
     }
 
-    public void changeName(String newName){
-        this.name = newName;
-    }
-    public void setId(Long id){
-        this.id=id;
-    }
-    public boolean isSameDirector(String directorName){
-        return this.name.equals(directorName);
+    public void changeName(String name){
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("이름은 필수입니다.");
+        }
+        this.name = name;
     }
 
     @Override
@@ -27,9 +27,19 @@ public class Director{
         if(this == o) return true;
         if(o == null || getClass() != o.getClass()) return false;
         Director director = (Director) o;
-        return id.equals(director.id);
+        return id != null && Objects.equals(id, director.id);
     }
     public int hashCode(){
         return Objects.hash(id);
+    }
+
+    public void setId(Long id){
+        this.id=id;
+    }
+    public Long getId(){
+        return this.id;
+    }
+    public String getName(){
+        return this.name;
     }
 }

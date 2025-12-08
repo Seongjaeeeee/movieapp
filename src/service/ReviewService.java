@@ -17,7 +17,7 @@ public class ReviewService {
     }
 
     public void createReview(String reviewDetail, Integer star, Long userId, Long movieId) {
-        Movie movie = movieService.findMovie(movieId);
+        Movie movie = movieService.getMovieById(movieId);
         User user = userService.findUser(userId);
         Review review = new Review(reviewDetail,star,movie,user);
         review.updateAverageRating();

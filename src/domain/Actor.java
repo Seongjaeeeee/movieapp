@@ -5,29 +5,44 @@ public class Actor{
     private String name;
    
     public Actor(String name){
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("이름은 필수입니다.");
+        }
         this.name = name;
     }
 
-    public void setId(Long id){
-        this.id=id;
-    }
     public void changeName(String newName){
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("이름은 필수입니다.");
+        }
         this.name = newName;
     }
-    public boolean isSameActor(String actorName){
-        return this.name.equals(actorName);
-    }
+
     @Override
     public String toString() {
         return "Actor{id=" + id + ", name='" + name + "'}";
     }
-    public boolean equals(Object o){
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Actor actor = (Actor) o;
-        return id.equals(actor.id);
+        // id가 null이면 동등하지 않음 (영속화 전 객체는 서로 다르다고 판단)
+        return id != null && Objects.equals(id, actor.id);
     }
+    @Override
     public int hashCode(){
         return Objects.hash(id);
+    }
+
+
+    public void setId(Long id){
+        this.id=id;
+    }
+    public Long getId(){
+        return this.id;
+    }
+    public String getName(){
+        return this.name;
     }
 }

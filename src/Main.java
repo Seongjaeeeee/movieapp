@@ -1,10 +1,11 @@
+import controller.MovieController;
 import list.ActorList;
 import list.DirectorList;
 import list.MovieList;
 import list.ReviewList;
 import list.UserList;
 import service.DirectorService;
-import service.MoviePersonPacadeService;
+import service.MoviePersonFacadeService;
 import service.MovieService;
 import service.ReviewService;
 import service.UserService;
@@ -18,18 +19,18 @@ public class Main {
         UserList userList = new UserList();
         DirectorList directorList = new DirectorList();
         ReviewList reviewList = new ReviewList();
-
+        
+        MovieService movieService = new MovieService(movieList);
         ActorService actorService = new ActorService(actorList);
         DirectorService directorService = new DirectorService(directorList);
+        MoviePersonFacadeService moviePersonFacadeService = new MoviePersonFacadeService(movieService,actorService,directorService);
         UserService userService = new UserService(userList);
-        MovieService movieService = new MovieService(movieList, actorService, directorService);
         ReviewService reviewService = new ReviewService(reviewList,movieService,userService);
-        MoviePersonPacadeService moviePersonPacadeService = new MoviePersonPacadeService(movieService,actorService,directorService);
+        
+        TestDataInit testDataInit = new TestDataInit(moviePersonFacadeService, directorService, actorService, userService, reviewService);
+        testDataInit.init();
 
-        Test test = new Test();
-        test.init(movieService, reviewService, userService);
-
-        MovieController controller = new MovieController(movieService,directorService,actorService,userService,reviewService,moviePersonPacadeService);
+        MovieController controller = new MovieController(movieService,directorService,actorService,moviePersonFacadeService);
         controller.start();
     }
 }

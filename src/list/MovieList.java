@@ -1,6 +1,8 @@
 package list;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import domain.Actor;
@@ -14,21 +16,22 @@ public class MovieList{
         movie.setId(id++);
         movies.add(movie);
     }
-    public void remove(Movie movie){
-        movies.remove(movie);
-    }
-    public List<Movie> get(){
-        return movies;
-    }
 
-    public Movie find(Long id){
-        return movies.stream().filter(m -> m.isSameMovie(id)).findFirst().orElse(null);
+    public List<Movie> findAll(){
+        return new ArrayList<>(movies);
+    }
+    public Optional<Movie> findById(Long id){
+        return movies.stream().filter(m -> Objects.equals(id,m.getId())).findFirst();
     }
     public List<Movie> findByActor(Actor actor){
-        return movies.stream().filter(m -> m.isContainActor(actor)).collect(Collectors.toList());
+        return movies.stream().filter(m -> m.containsActor(actor)).collect(Collectors.toList());
     }
     public List<Movie> findByDirector(Director director){
-        return movies.stream().filter(m -> m.isEqualDirector(director)).collect(Collectors.toList());
+        return movies.stream().filter(m -> m.isDirectedBy(director)).collect(Collectors.toList());
+    }
+
+    public void delete(Movie movie){
+        movies.remove(movie);
     }
 
 }
