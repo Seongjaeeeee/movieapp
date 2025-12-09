@@ -29,6 +29,15 @@ public class MovieList{
     public List<Movie> findByDirector(Director director){
         return movies.stream().filter(m -> m.isDirectedBy(director)).collect(Collectors.toList());
     }
+    public List<Movie> findAllByName(String keyword){
+        return movies.stream().filter(m -> m.containsName(keyword)).collect(Collectors.toList());
+    }
+    public List<Movie> findAllByActorName(String keyword){
+        return movies.stream().filter(m -> m.containsActorName(keyword)).collect(Collectors.toList());
+    }
+    public List<Movie> findAllByDirectorName(String keyword){
+        return movies.stream().filter(m -> m.containsDirectorName(keyword)).collect(Collectors.toList());
+    }
 
     public void delete(Movie movie){
         movies.remove(movie);

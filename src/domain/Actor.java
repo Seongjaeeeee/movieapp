@@ -11,11 +11,26 @@ public class Actor{
         this.name = name;
     }
 
+    public boolean containsName(String keyword){
+        if (keyword == null) return false;
+        return this.name.toLowerCase().contains(keyword.toLowerCase());
+    }
+
     public void changeName(String newName){
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("이름은 필수입니다.");
         }
         this.name = newName;
+    }
+
+    public void setId(Long id){
+        this.id=id;
+    }
+    public Long getId(){
+        return this.id;
+    }
+    public String getName(){
+        return this.name;
     }
 
     @Override
@@ -33,16 +48,5 @@ public class Actor{
     @Override
     public int hashCode(){
         return Objects.hash(id);
-    }
-
-
-    public void setId(Long id){
-        this.id=id;
-    }
-    public Long getId(){
-        return this.id;
-    }
-    public String getName(){
-        return this.name;
     }
 }

@@ -1,13 +1,15 @@
 package service;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import domain.Actor;
 import domain.Director;
 import domain.Genre;
 import domain.Movie;
-import list.MovieList;
 import dto.MovieParam;
+import dto.MovieSearchResult;
+import list.MovieList;
 public class MovieService{
     private final MovieList movieList;
 
@@ -26,7 +28,15 @@ public class MovieService{
     public Movie getMovieById(Long id){
         return movieList.findById(id).orElseThrow(()->new IllegalArgumentException("유효하지 않은 영화 id입니다."));
     }
-
+    public List<MovieSearchResult> findMovieByName(String keyword){
+        return toMovieSearchResult(movieList.findAllByName(keyword));
+    }
+    public List<MovieSearchResult> findMovieByActorName(String keyword){
+        return toMovieSearchResult(movieList.findAllByActorName(keyword));
+    }
+    public List<MovieSearchResult> findMovieByDirectorName(String keyword){
+        return toMovieSearchResult(movieList.findAllByDirectorName(keyword));
+    }
     public void updateMovieInfo(Long id,MovieParam param){
         Movie movie = getMovieById(id);
         movie.updateMovieInfo(param.getName(), param.getGenre(), param.getReleaseDate(), param.getDescription());
@@ -58,6 +68,14 @@ public class MovieService{
         for(Movie movie:tempList){
             movie.changeDirector(anonymous);
         }
+    }
+
+    private List<MovieSearchResult> toMovieSearchResult(List<Movie> movies){
+        List<MovieSearchResult> results= new ArrayList<>();
+        for(Movie movie : movies){
+            results.add(new MovieSearchResult(movie.getName(), movie.getId()));
+        }
+        return results;
     }
 
 } 

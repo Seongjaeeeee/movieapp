@@ -34,6 +34,16 @@ public class Movie{
     public boolean isDirectedBy(Director director){
         return this.director.equals(director);
     }
+    public boolean containsName(String keyword){
+        if (keyword == null) return false;
+        return this.name.toLowerCase().contains(keyword.toLowerCase());
+    }
+    public boolean containsActorName(String keyword){
+        return actors.stream().anyMatch(actor -> actor.containsName(keyword));
+    }
+    public boolean containsDirectorName(String keyword){
+        return this.director.containsName(keyword);
+    }
     
     public void updateMovieInfo(String name, Genre genre, LocalDate releaseDate, String description) {
         if (name != null && !name.isBlank()) this.name = name;
@@ -80,6 +90,16 @@ public class Movie{
         }
     }
 
+    public Long getId(){
+        return this.id;
+    }
+    public void setId(Long id){
+        this.id = id;
+    }
+    public String getName(){
+        return this.name;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -101,12 +121,5 @@ public class Movie{
     }
     public int hashCode(){
         return Objects.hash(id);
-    }
-
-    public Long getId(){
-        return this.id;
-    }
-    public void setId(Long id){
-        this.id = id;
     }
 }

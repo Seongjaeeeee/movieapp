@@ -8,6 +8,7 @@ import service.DirectorService;
 import service.MoviePersonFacadeService;
 import service.MovieService;
 import service.ReviewService;
+import service.SearchService;
 import service.UserService;
 import service.ActorService;
 
@@ -24,13 +25,14 @@ public class Main {
         ActorService actorService = new ActorService(actorList);
         DirectorService directorService = new DirectorService(directorList);
         MoviePersonFacadeService moviePersonFacadeService = new MoviePersonFacadeService(movieService,actorService,directorService);
+        SearchService searchService = new SearchService(movieService);
         UserService userService = new UserService(userList);
         ReviewService reviewService = new ReviewService(reviewList,movieService,userService);
         
         TestDataInit testDataInit = new TestDataInit(moviePersonFacadeService, directorService, actorService, userService, reviewService);
         testDataInit.init();
 
-        MovieController controller = new MovieController(movieService,directorService,actorService,moviePersonFacadeService);
+        MovieController controller = new MovieController(movieService,directorService,actorService,moviePersonFacadeService,searchService);
         controller.start();
     }
 }

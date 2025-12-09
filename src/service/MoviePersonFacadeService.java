@@ -19,6 +19,7 @@ public class MoviePersonFacadeService {
         this.directorService = directorService;
     }
 
+    //영화 관련 로직
     public void createMovie(String name, Genre genre, LocalDate releaseDate, String description,Long directorId,Long ... actorIds){
         Director director = directorService.getDirectorById(directorId);
         ArrayList<Actor> actors=new ArrayList<>();

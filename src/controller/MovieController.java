@@ -8,27 +8,29 @@ import java.util.Scanner;
 import domain.Genre;
 import domain.Movie;
 import dto.MovieParam;
+import dto.MovieSearchResult;
 import service.ActorService;
 import service.DirectorService;
 import service.MoviePersonFacadeService;
 import service.MovieService;
+import service.SearchService;
 
 public class MovieController {
     // 조회용 (Read)
     private final MovieService movieService;
     private final DirectorService directorService;
     private final ActorService actorService;
-    
-    // 복합 로직/쓰기용 (Create, Update, Delete)
+    private final SearchService searchService;
     private final MoviePersonFacadeService facadeService;
 
     private final Scanner scanner;
 
-    public MovieController(MovieService movieService, DirectorService directorService, ActorService actorService, MoviePersonFacadeService facadeService) {
+    public MovieController(MovieService movieService, DirectorService directorService, ActorService actorService, MoviePersonFacadeService facadeService,SearchService searchService) {
         this.movieService = movieService;
         this.directorService = directorService;
         this.actorService = actorService;
         this.facadeService = facadeService;
+        this.searchService = searchService;
         this.scanner = new Scanner(System.in);
     }
 
@@ -122,30 +124,55 @@ public class MovieController {
     // 2. 조회 (Read) - Service 직접 호출
     // ==========================================
     private void readMenu() {
-        System.out.println("\n[조회 메뉴] 1.전체 영화  2.전체 감독  3.전체 배우  4.영화 상세(ID)");
-        String subCmd = scanner.nextLine();
+    // 5번 메뉴 추가
+    System.out.println("\n[조회 메뉴] 1.전체 영화  2.전체 감독  3.전체 배우  4.영화 상세(ID)  5.통합 검색");
+    String subCmd = scanner.nextLine();
 
-        try {
-            switch (subCmd) {
-                case "1" -> {
-                    List<Movie> movies = movieService.findAllMovies();
-                    if (movies.isEmpty()) System.out.println("등록된 영화가 없습니다.");
-                    else movies.forEach(System.out::println);
+    try {
+        switch (subCmd) {
+            case "1" -> {
+                List<Movie> movies = movieService.findAllMovies();
+                if (movies.isEmpty()) System.out.println("등록된 영화가 없습니다.");
+                else movies.forEach(System.out::println);
+            }
+            case "2" -> directorService.findAllDirectors().forEach(System.out::println);
+            case "3" -> actorService.findAllActors().forEach(System.out::println);
+            case "4" -> {
+                System.out.print("영화 ID 입력: ");
+                Long id = Long.parseLong(scanner.nextLine());
+                Movie movie = movieService.getMovieById(id);
+                System.out.println(movie); 
+            }
+            // --- [추가된 통합 검색 로직] ---
+            case "5" -> {
+                System.out.print("검색어 입력: ");
+                String keyword = scanner.nextLine();
+
+                if (keyword.isBlank()) {
+                    System.out.println("⚠️ 검색어를 입력해주세요.");
+                    break;
                 }
-                case "2" -> directorService.findAllDirectors().forEach(System.out::println);
-                case "3" -> actorService.findAllActors().forEach(System.out::println);
-                case "4" -> {
-                    System.out.print("영화 ID 입력: ");
-                    Long id = Long.parseLong(scanner.nextLine());
-                    Movie movie = movieService.getMovieById(id);
-                    System.out.println(movie); // toString() 출력
+
+                // searchAllMovie가 포함된 서비스 객체 호출 (facadeService라고 가정)
+                List<MovieSearchResult> results = searchService.searchAllMovie(keyword);
+
+                if (results.isEmpty()) {
+                    System.out.println("🔍 '" + keyword + "'에 대한 검색 결과가 없습니다.");
+                } else {
+                    System.out.println("=== 🔍 검색 결과 (" + results.size() + "건) ===");
+                    for (MovieSearchResult result : results) {
+                        System.out.println(result); 
+                    }
                 }
             }
-        } catch (IllegalArgumentException e) { // getById 실패 시
-            System.out.println("❌ 조회 실패: " + e.getMessage());
+            default -> System.out.println("❌ 잘못된 메뉴 선택입니다.");
         }
+    } catch (IllegalArgumentException e) { 
+        System.out.println("❌ 조회 실패: " + e.getMessage());
+    } catch (Exception e) { // 숫자가 아닌 값 입력 등 기타 예외 처리
+        System.out.println("❌ 오류 발생: " + e.getMessage());
     }
-
+}
     // ==========================================
     // 3. 수정 (Update)
     // ==========================================
