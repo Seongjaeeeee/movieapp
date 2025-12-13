@@ -1,7 +1,9 @@
 package service;
+import java.util.ArrayList;
 import java.util.List;
 
 import domain.Actor;
+import dto.ActorSearchResult;
 import list.ActorList;
 
 public class ActorService {
@@ -9,23 +11,21 @@ public class ActorService {
     public ActorService(ActorList actorList){
         this.actorList=actorList;
     }
-    /*
-    public Actor getOrCreateActor(String actorName){
-        Optional<Actor> optionalActor= actorList.findByName(actorName);
-        if (optionalActor.isPresent()){
-            return optionalActor.get();
-        }
-        else{
-            Actor actor = createActor(actorName); 
-            return actor;        
-        }     
-    }*/
+
     public Actor createActor(String actorName){
         Actor actor = new Actor(actorName);
         actorList.save(actor); 
         return actor;
     }
 
+    public List<ActorSearchResult> findAllActorsByKeyword(String keyword){
+        List<Actor> actors= actorList.findAllByKeyword(keyword);
+        List<ActorSearchResult> results = new ArrayList<>();
+        for(Actor actor:actors){
+            results.add(new ActorSearchResult(actor.getName(), actor.getId()));
+        }
+        return results;
+    }
     public List<Actor> findAllActors(){//모든 배우 목록 제공 ,find는 검색
         return actorList.findAll();
     }

@@ -10,7 +10,7 @@ import domain.Director;
 public class DirectorList{
     private Long idSequence=1L;
     private List<Director> directors = new ArrayList<>();
-    private final Director anonymousDirector; 
+    private final Director anonymousDirector; //임마 이름 수정 못하게 어케할지 고민
 
     public DirectorList() {
         this.anonymousDirector = new Director("Unknown Director");
@@ -29,6 +29,12 @@ public class DirectorList{
     public List<Director> findAllByName(String name){
         return directors.stream()
                 .filter(director -> Objects.equals(director.getName(), name))
+                .collect(Collectors.toList());
+    }
+
+    public List<Director> findAllByKeyword(String keyword){
+        return directors.stream()
+                .filter(director -> director.containsKeyword(keyword))
                 .collect(Collectors.toList());
     }
     public Optional<Director> findById(Long id) {

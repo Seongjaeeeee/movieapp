@@ -11,7 +11,7 @@ public class Director{
         }
         this.name = name;   
     }
-    public boolean containsName(String keyword){
+    public boolean containsKeyword(String keyword){
         if (keyword == null) return false;//굳이 예외처리 ㄴㄴ 검색이니깐
         return this.name.toLowerCase().contains(keyword.toLowerCase());
     }

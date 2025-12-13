@@ -24,6 +24,11 @@ public class ActorList{
                 .filter(actor -> Objects.equals(actor.getName(), name))
                 .collect(Collectors.toList());
     }
+    public List<Actor> findAllByKeyword(String keyword){
+        return actors.stream()
+                .filter(actor -> actor.containsKeyword(keyword))
+                .collect(Collectors.toList());
+    }
     public Optional<Actor> findById(Long id) {
         return actors.stream()
                 .filter(actor -> Objects.equals(actor.getId(), id))

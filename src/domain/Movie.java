@@ -34,15 +34,15 @@ public class Movie{
     public boolean isDirectedBy(Director director){
         return this.director.equals(director);
     }
-    public boolean containsName(String keyword){
+    public boolean containsKeyword(String keyword){
         if (keyword == null) return false;
         return this.name.toLowerCase().contains(keyword.toLowerCase());
     }
-    public boolean containsActorName(String keyword){
-        return actors.stream().anyMatch(actor -> actor.containsName(keyword));
+    public boolean containsActorKeyword(String keyword){
+        return actors.stream().anyMatch(actor -> actor.containsKeyword(keyword));
     }
-    public boolean containsDirectorName(String keyword){
-        return this.director.containsName(keyword);
+    public boolean containsDirectorKeyword(String keyword){
+        return this.director.containsKeyword(keyword);
     }
     
     public void updateMovieInfo(String name, Genre genre, LocalDate releaseDate, String description) {

@@ -1,7 +1,9 @@
 package service;
+import java.util.ArrayList;
 import java.util.List;
 
 import domain.Director;
+import dto.DirectorSearchResult;
 import list.DirectorList;
 
 public class DirectorService{
@@ -15,6 +17,14 @@ public class DirectorService{
         directorList.save(director); 
     }
 
+    public List<DirectorSearchResult> findAllDirectorsByKeyword(String keyword){
+        List<Director> directors= directorList.findAllByKeyword(keyword);
+        List<DirectorSearchResult> results = new ArrayList<>();
+        for(Director director:directors){
+            results.add(new DirectorSearchResult(director.getName(), director.getId()));
+        }
+        return results;
+    }
     public List<Director> findAllDirectors(){
         return directorList.findAll();
     }

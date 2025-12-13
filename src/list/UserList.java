@@ -1,6 +1,9 @@
 package list;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import domain.User;
 
 public class UserList {
@@ -11,9 +14,12 @@ public class UserList {
         user.setId(id++);
         userList.add(user);
     }
-
-    public User find(Long id){
-        return userList.stream().filter(u -> u.isEqual(id)).findFirst().orElse(null);
+    
+    public boolean existsByName(String name){
+        return userList.stream().anyMatch(u -> Objects.equals(u.getUserName(), name));
+    }
+    public Optional<User> findByName(String name){
+        return userList.stream().filter(u -> Objects.equals(u.getUserName(), name)).findFirst();
     }
 
 }
