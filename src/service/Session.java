@@ -19,4 +19,8 @@ public class Session {
         //if (this.currentUser == null)throw new IllegalStateException("로그인이 안되어있어 권한을 확인할 수 없습니다"); -> 굳이인 예외처리도 있다.
         return currentUser != null&&currentUser.isAdmin();
     }
+
+    public User getUser(){
+        return currentUser;
+    }
 }

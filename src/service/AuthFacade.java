@@ -28,4 +28,8 @@ public class AuthFacade {
     public boolean isAdmin(){
         return session.isAdmin();
     }
+
+    public User getUser(){
+        return session.getUser();
+    }
 }

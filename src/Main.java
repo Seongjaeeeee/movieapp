@@ -40,8 +40,9 @@ public class Main {
         SearchService searchService = 
             new SearchService(movieService, actorService, directorService);
         ReviewService reviewService = 
-            new ReviewService(reviewList, movieService, userService);
+            new ReviewService(reviewList, movieService);
         
+            
         // 테스트 데이터 초기화
         TestDataInit testDataInit = 
             new TestDataInit(moviePersonFacadeService, directorService, actorService, userService, reviewService);
@@ -50,7 +51,7 @@ public class Main {
         // 컨트롤러 생성 및 애플리케이션 시작 (생성자 주입)
         MovieController controller = 
             new MovieController(movieService, directorService, actorService, 
-                              moviePersonFacadeService, searchService, authFacade, session);
+                              moviePersonFacadeService, searchService, authFacade, session,reviewService);
         authFacade.createAdmin("admin", "jsj1020");
         controller.start();
     }

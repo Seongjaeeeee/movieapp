@@ -7,6 +7,8 @@ import java.util.Scanner;
 
 import domain.Genre;
 import domain.Movie;
+import domain.Review;
+import domain.User;
 import dto.ActorSearchResult;
 import dto.MovieParam;
 import dto.PersonSearchResult;
@@ -15,6 +17,7 @@ import service.AuthFacade;
 import service.DirectorService;
 import service.MoviePersonFacadeService;
 import service.MovieService;
+import service.ReviewService;
 import service.SearchService;
 import service.Session;
 
@@ -26,6 +29,7 @@ public class MovieController {
     private final MoviePersonFacadeService moviepersonfacadeService;
     private final AuthFacade authFacade;
     private final Session session;
+    private final ReviewService reviewService;
     private final Scanner scanner;
 
     public MovieController(MovieService movieService, 
@@ -34,7 +38,7 @@ public class MovieController {
                            MoviePersonFacadeService moviepersonfacadeService,
                            SearchService searchService,
                            AuthFacade authFacade,
-                           Session session) {      
+                           Session session,ReviewService reviewService) {      
         this.movieService = movieService;
         this.directorService = directorService;
         this.actorService = actorService;
@@ -42,6 +46,7 @@ public class MovieController {
         this.searchService = searchService;
         this.authFacade = authFacade;
         this.session = session;
+        this.reviewService = reviewService;
         this.scanner = new Scanner(System.in);
     }
 // ==========================================
@@ -117,28 +122,25 @@ public class MovieController {
     // ==========================================
     private void adminMainLoop() {
         boolean isRunning = true;
-        // 로그아웃되거나 메뉴에서 나가기를 선택할 때까지 반복
         while (isRunning && authFacade.isLoggedIn()) {
             try {
                 System.out.println("\n[관리자 모드] ========================");
-                System.out.println("1.등록  2.조회(전체/검색)  3.수정  4.삭제  5.로그아웃");
+                // ★ 6번 메뉴 추가: 내 리뷰 관리
+                System.out.println("1.등록  2.조회  3.수정  4.삭제  5.로그아웃  6.내 리뷰 관리");
                 System.out.print("관리자 명령 > ");
                 String command = scanner.nextLine().trim();
 
                 switch (command) {
-                    case "1" -> createMenu();      // 기존 등록 메뉴
-                    case "2" -> adminReadMenu();   // ★ 관리자용 조회 메뉴 (전체조회 포함)
-                    case "3" -> updateMenu();      // 기존 수정 메뉴
-                    case "4" -> deleteMenu();      // 기존 삭제 메뉴
-                    case "5" -> {
-                        authFacade.logout();
-                        System.out.println("로그아웃 되었습니다.");
-                        isRunning = false; 
-                    }
+                    case "1" -> createMenu();
+                    case "2" -> adminReadMenu();
+                    case "3" -> updateMenu();
+                    case "4" -> deleteMenu();
+                    case "5" -> { authFacade.logout(); isRunning = false; }
+                    case "6" -> manageMyAllReviewsProcess(); // ★ 신규 기능 연결 (유저와 동일 로직)
                     default -> System.out.println("⚠️ 잘못된 명령입니다.");
                 }
             } catch (Exception e) {
-                System.out.println("⛔ 시스템 에러 발생: " + e.getMessage());
+                System.out.println("⛔ " + e.getMessage());
             }
         }
     }
@@ -146,20 +148,22 @@ public class MovieController {
     // ==========================================
     // [User Loop] 일반 유저 전용 (검색만 가능)
     // ==========================================
-    private void userMainLoop() {
+   private void userMainLoop() {
         boolean isRunning = true;
         while (isRunning && authFacade.isLoggedIn()) {
             try {
                 System.out.println("\n[일반 사용자 모드] ====================");
-                System.out.println("1.영화검색  2.인물검색  3.영화상세조회(ID)  4.로그아웃");
+                // ★ 4번 메뉴 추가: 내 리뷰 관리
+                System.out.println("1.영화검색  2.인물검색  3.영화상세조회  4.내 리뷰 관리  5.로그아웃");
                 System.out.print("사용자 명령 > ");
                 String command = scanner.nextLine().trim();
 
                 switch (command) {
-                    case "1" -> searchMovieProcess();     // 검색 로직 (공통)
-                    case "2" -> searchPersonProcess();    // 인물 검색 (공통)
-                    case "3" -> viewMovieDetailProcess(); // 상세 조회 (공통)
-                    case "4" -> {
+                    case "1" -> searchMovieProcess();
+                    case "2" -> searchPersonProcess();
+                    case "3" -> viewMovieDetailProcess();
+                    case "4" -> manageMyAllReviewsProcess();
+                    case "5" -> {
                         authFacade.logout();
                         System.out.println("로그아웃 되었습니다.");
                         isRunning = false;
@@ -167,7 +171,7 @@ public class MovieController {
                     default -> System.out.println("⚠️ 잘못된 명령입니다.");
                 }
             } catch (Exception e) {
-                System.out.println("⛔ 시스템 에러 발생: " + e.getMessage());
+                System.out.println("⛔ 시스템 에러: " + e.getMessage());
             }
         }
     }
@@ -304,22 +308,6 @@ public class MovieController {
     // ---------------------------------------------------
     // [공통 로직] 유저/관리자 공유 프로세스 (중복 제거)
     // ---------------------------------------------------
-
-    private void viewMovieDetailProcess() {
-        System.out.print("영화 ID 입력: ");
-        String idInput = scanner.nextLine().trim();
-        if (idInput.isEmpty()) throw new IllegalArgumentException("ID를 입력해주세요.");
-        
-        Long id;
-        try {
-            id = Long.parseLong(idInput);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("ID는 숫자여야 합니다.");
-        }
-        Movie movie = movieService.getMovieById(id);
-        System.out.println(movie);
-    }
-
     private void searchMovieProcess() {
         System.out.print("영화 검색어 입력: ");
         String keyword = scanner.nextLine().trim();
@@ -355,6 +343,88 @@ public class MovieController {
 
         if (!foundAny) {
             System.out.println("🔍 '" + keyword + "'에 대한 인물 검색 결과가 없습니다.");
+        }
+    }
+    // ==========================================
+    // ★ [Core Logic] 상세 조회 + 리뷰 통합
+    // ==========================================
+    private void viewMovieDetailProcess() {
+        System.out.println("\n--- 영화 상세 조회 ---");
+        System.out.print("영화 ID 입력: ");
+        String input = scanner.nextLine().trim();
+        if (input.isEmpty()) return;
+
+        Long movieId;
+        try {
+            movieId = Long.parseLong(input);
+        } catch (NumberFormatException e) {
+            System.out.println("❌ ID는 숫자여야 합니다.");
+            return;
+        }
+
+        try {
+            // 1. 영화 정보 조회 및 출력
+            Movie movie = movieService.getMovieById(movieId);
+            System.out.println("\n========================================");
+            System.out.println(movie); // 영화 상세 정보 출력
+            System.out.println("========================================");
+
+            // 2. 내부 루프 진입 (리뷰 조회/작성/수정)
+            boolean inDetailMenu = true;
+            while (inDetailMenu) {
+                // 현재 영화의 리뷰 목록 출력
+                printReviewsForMovie(movieId);
+
+                System.out.println("\n[메뉴] 1.리뷰작성  2.뒤로가기");
+                System.out.print("선택 > ");
+                String cmd = scanner.nextLine().trim();
+
+                switch (cmd) {
+                    case "1" -> createReviewProcess(movieId); // ID 전달
+                    case "2" -> inDetailMenu = false; // 루프 종료
+                    default -> System.out.println("⚠️ 잘못된 선택입니다.");
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ 영화를 찾을 수 없습니다: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("⛔ 오류 발생: " + e.getMessage());
+        }
+    }
+
+    //리뷰 목록 출력
+    private void printReviewsForMovie(Long movieId) {
+        List<Review> reviews = reviewService.findReviewByMovieId(movieId);
+        System.out.println("\n--- 💬 User Reviews (" + reviews.size() + ") ---");
+        if (reviews.isEmpty()) {
+            System.out.println("   (아직 작성된 리뷰가 없습니다. 첫 리뷰를 남겨보세요!)");
+        } else {
+            for (Review r : reviews) {
+                System.out.println(r);
+            }
+        }
+        System.out.println("----------------------------------------");
+    }
+
+    // [Action] 리뷰 작성 (영화 ID를 이미 알고 있음)
+    private void createReviewProcess(Long movieId) {
+        System.out.println("\n[📝 리뷰 작성]");
+        try {
+            System.out.print("평점 (1~5): ");
+            int rating = Integer.parseInt(scanner.nextLine().trim());
+            if (rating < 1 || rating > 5) throw new IllegalArgumentException("1~5 사이 숫자를 입력하세요.");
+
+            System.out.print("내용: ");
+            String content = scanner.nextLine().trim();
+
+            User user = authFacade.getUser();
+            reviewService.createReview(content, rating, user, movieId);
+            System.out.println("✅ 리뷰가 등록되었습니다!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("❌ 평점은 숫자여야 합니다.");
+        } catch (Exception e) {
+            System.out.println("❌ 리뷰 등록 실패: " + e.getMessage());
         }
     }
 
@@ -470,6 +540,77 @@ public class MovieController {
             System.out.println("⛔ 오류 발생: " + e.getMessage());
         }
     }
+//////////////////////////////////////////////////////////////////////////////////////////////리뷰기능
+    private void manageMyAllReviewsProcess() {
+        boolean inMyReview = true;
+        User me = authFacade.getUser(); // 현재 로그인한 유저
+
+        while (inMyReview) {
+            // 1. 내 리뷰 전체 조회 (서비스 호출)
+            List<Review> myReviews = reviewService.findReviewByUser(me);
+
+            System.out.println("\n===== [📂 내 리뷰 보관함] (" + myReviews.size() + "건) =====");
+            if (myReviews.isEmpty()) {
+                System.out.println("   (작성한 리뷰가 없습니다)");
+            } else {
+                for (Review r : myReviews) {
+                    System.out.println(r);
+                }
+            }
+            System.out.println("==========================================");
+            System.out.println("1.리뷰수정  2.리뷰삭제  3.뒤로가기");
+            System.out.print("선택 > ");
+            String cmd = scanner.nextLine().trim();
+
+            if (cmd.equals("3")) {
+                inMyReview = false;
+                continue;
+            }
+            if (myReviews.isEmpty()) {
+                System.out.println("⚠️ 수정/삭제할 리뷰가 없습니다.");
+                continue;
+            }
+            //메인로직
+            try {
+                System.out.print("대상 리뷰 ID 입력: ");
+                Long reviewId = parseLongInput(scanner.nextLine().trim(), "리뷰 ID");
+
+                if (cmd.equals("1")) {
+                    // 수정 로직
+                    System.out.print("새 평점 (1~5): ");
+                    int rating = Integer.parseInt(scanner.nextLine().trim());
+                    if(rating < 1 || rating > 5) throw new IllegalArgumentException("1~5 사이 입력");
+                    
+                    System.out.print("새 내용: ");
+                    String content = scanner.nextLine().trim();
+                    if(content.isEmpty()) throw new IllegalArgumentException("내용 입력 필수");
+
+                    reviewService.updateReview(content, rating, reviewId, me);
+                    System.out.println("✅ 수정되었습니다.");
+
+                } else if (cmd.equals("2")) {
+                    // 삭제 로직
+                    System.out.print("정말 삭제하시겠습니까? (y/n): ");
+                    String confirm = scanner.nextLine().trim();
+                    if (confirm.equalsIgnoreCase("y")) {
+                        reviewService.deleteReview(reviewId, me);
+                        System.out.println("✅ 삭제되었습니다.");
+                    } else {
+                        System.out.println("취소되었습니다.");
+                    }
+                } else {
+                    System.out.println("⚠️ 잘못된 선택입니다.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("❌ 숫자를 입력해주세요.");
+            } catch (IllegalStateException e) {
+                System.out.println("🚫 권한 오류: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("⛔ 처리 중 오류: " + e.getMessage());
+            }
+        }
+    }
 
     // [Helper] 숫자 파싱
     private Long parseLongInput(String input, String fieldName) {
@@ -483,3 +624,9 @@ public class MovieController {
         }
     }
 }
+/*현재 while로 감싸진 페이지들
+1.로그인
+2.유저/관리자 기능 페이지
+3.영화 상세페이지 -> 리뷰 작성위함
+4.내 리뷰 관리페이지
+ */

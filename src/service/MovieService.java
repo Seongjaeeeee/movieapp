@@ -8,7 +8,7 @@ import domain.Director;
 import domain.Genre;
 import domain.Movie;
 import dto.MovieParam;
-import dto.ActorSearchResult;
+import dto.MovieSearchResult;
 import list.MovieList;
 public class MovieService{
     private final MovieList movieList;
@@ -28,13 +28,13 @@ public class MovieService{
     public Movie getMovieById(Long id){
         return movieList.findById(id).orElseThrow(()->new IllegalArgumentException("유효하지 않은 영화 id입니다."));
     }
-    public List<ActorSearchResult> findAllMoviesByKeyword(String keyword){
+    public List<MovieSearchResult> findAllMoviesByKeyword(String keyword){
         return toMovieSearchResult(movieList.findAllByKeyword(keyword));
     }
-    public List<ActorSearchResult> findAllMovieByActorKeyword(String keyword){
+    public List<MovieSearchResult> findAllMovieByActorKeyword(String keyword){
         return toMovieSearchResult(movieList.findAllByActorKeyword(keyword));
     }
-    public List<ActorSearchResult> findAllMoviesByDirectorkeyword(String keyword){
+    public List<MovieSearchResult> findAllMoviesByDirectorkeyword(String keyword){
         return toMovieSearchResult(movieList.findAllByDirectorKeyword(keyword));
     }
     public void updateMovieInfo(Long id,MovieParam param){
@@ -70,10 +70,10 @@ public class MovieService{
         }
     }
 
-    private List<ActorSearchResult> toMovieSearchResult(List<Movie> movies){
-        List<ActorSearchResult> results= new ArrayList<>();
+    private List<MovieSearchResult> toMovieSearchResult(List<Movie> movies){
+        List<MovieSearchResult> results= new ArrayList<>();
         for(Movie movie : movies){
-            results.add(new ActorSearchResult(movie.getName(), movie.getId()));
+            results.add(new MovieSearchResult(movie.getName(), movie.getId()));
         }
         return results;
     }
