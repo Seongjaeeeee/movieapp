@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import dto.ActorSearchResult;
+import dto.MovieSearchResult;
 import dto.PersonSearchResult;
 
 public class SearchService {
@@ -18,13 +18,13 @@ public class SearchService {
         this.directorService = directorService;
     }
     
-    public List<ActorSearchResult> searchAllMovie(String keyword){
-        List<ActorSearchResult> results = new ArrayList<>(); 
+    public List<MovieSearchResult> searchAllMovie(String keyword){
+        List<MovieSearchResult> results = new ArrayList<>(); 
         results.addAll(movieService.findAllMoviesByKeyword(keyword));
         results.addAll(movieService.findAllMovieByActorKeyword(keyword));
         results.addAll(movieService.findAllMoviesByDirectorkeyword(keyword));
         
-        List<ActorSearchResult> uniqueResults = results.stream().distinct().collect(Collectors.toList());
+        List<MovieSearchResult> uniqueResults = results.stream().distinct().collect(Collectors.toList());
         //uniqueResults.sort((r1, r2) -> r1.getName().compareTo(r2.getName()));
         return uniqueResults;
     }

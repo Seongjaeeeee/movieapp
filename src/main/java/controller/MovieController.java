@@ -9,8 +9,8 @@ import domain.Genre;
 import domain.Movie;
 import domain.Review;
 import domain.User;
-import dto.ActorSearchResult;
 import dto.MovieParam;
+import dto.MovieSearchResult;
 import dto.PersonSearchResult;
 import service.ActorService;
 import service.AuthFacade;
@@ -313,7 +313,7 @@ public class MovieController {
         String keyword = scanner.nextLine().trim();
         if (keyword.isEmpty()) throw new IllegalArgumentException("검색어를 입력해야 합니다.");
 
-        List<ActorSearchResult> results = searchService.searchAllMovie(keyword);
+        List<MovieSearchResult> results = searchService.searchAllMovie(keyword);
         if (results.isEmpty()) {
             System.out.println("🔍 '" + keyword + "'에 대한 영화 검색 결과가 없습니다.");
         } else {

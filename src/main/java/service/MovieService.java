@@ -37,6 +37,8 @@ public class MovieService{
     public List<MovieSearchResult> findAllMoviesByDirectorkeyword(String keyword){
         return toMovieSearchResult(movieList.findAllByDirectorKeyword(keyword));
     }
+
+    
     public void updateMovieInfo(Long id,MovieParam param){
         Movie movie = getMovieById(id);
         movie.updateMovieInfo(param.getName(), param.getGenre(), param.getReleaseDate(), param.getDescription());
