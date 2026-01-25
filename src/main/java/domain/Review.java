@@ -9,12 +9,28 @@ public class Review {
     private Movie movie;
     private User user;
 
-    public Review(String content, Integer rating, User user,Movie movie) {
-        if(rating==null||rating>5||rating<1||user==null||movie==null)throw new IllegalArgumentException("별점이 올바르지 않습니다.");
+    private Review(String content, Integer rating, User user, Movie movie) {
         this.content = content;
         this.rating = rating;
         this.movie = movie;
-        this.user = user;        
+        this.user = user;
+    }
+    public static Review create(String content, Integer rating, User user, Movie movie) {//정적 팩토리 메서드
+        if(rating==null||rating>5||rating<1||user==null||movie==null)throw new IllegalArgumentException("리뷰 생성을 위한 인자가 적절하지 않습니다.");
+        Review review = new Review(content, rating, user, movie);
+        movie.addRating(rating);
+        return review;
+    }
+    public void update(String content,Integer rating){
+        if(rating==null||rating>5||rating<1)throw new IllegalArgumentException("별점이 올바르지 않습니다.");
+        this.content = content;
+        if(!this.rating.equals(rating)){
+            movie.updateRating(this.rating,rating);
+        this.rating = rating;
+        }
+    }
+    public void deleteRating(){
+        movie.deleteRating(rating);
     }
     
     public boolean hasMovieId(Long id){
@@ -23,15 +39,7 @@ public class Review {
     public boolean isOwner(User user){
         return Objects.equals(this.user,user);
     }
-    public void updateReview(String content,Integer rating){
-        if(rating==null||rating>5||rating<1)throw new IllegalArgumentException("별점이 올바르지 않습니다.");
-        this.content = content;
-        this.rating = rating;
-    }
-    public void updateAverageRating(){
-        movie.updateRating(rating);
-    }
-
+    
     public void setId(Long id){
         this.id=id;
     }

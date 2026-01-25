@@ -18,7 +18,7 @@ public class ReviewService {
 
     public void createReview(String content, Integer rating, User user, Long movieId) {
         Movie movie = movieService.getMovieById(movieId);
-        Review review = new Review(content,rating,user,movie);
+        Review review = Review.create(content,rating,user,movie);
         reviewList.save(review);
     }
     public List<Review> findReviewByMovieId(Long movieId) {
@@ -31,11 +31,12 @@ public class ReviewService {
     public void updateReview(String content,Integer rating,Long reviewId,User user){
         Review review = getReviewById(reviewId);
         if(!isReviewOwner(user, review))throw new IllegalStateException("수정할 수 있는 유저가 아닙니다.");
-        review.updateReview(content,rating);
+        review.update(content,rating);
     }
     public void deleteReview(Long reviewId,User user){
         Review review = getReviewById(reviewId);
         if(!isReviewOwner(user, review))throw new IllegalStateException("삭제할 수 있는 유저가 아닙니다.");
+        review.deleteRating();
         reviewList.delete(review);
     }
 

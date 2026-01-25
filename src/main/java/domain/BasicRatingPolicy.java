@@ -2,7 +2,7 @@ package domain;
 
 import java.util.Map;
 
-public class BasicRatingpolicy implements RatingPolicy{
+public class BasicRatingPolicy implements RatingPolicy{
     public double calculateRating(Map<Integer, Long> ratingDistribution){
         long count=0;
         long totalsum=0;

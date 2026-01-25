@@ -15,7 +15,7 @@ public class Movie{
     private List<Actor> actors = new ArrayList<>();
 
     private Double rating=0.0;
-    private RatingPolicy ratingPolicy = new AntiBombRatingPolicy();//임시
+    private RatingPolicy ratingPolicy = new BasicRatingPolicy();//임시
     private Map<Integer, Long> ratingDistribution = new HashMap<>();//점수,개수
    
     public Movie(String name, Director director, Genre genre,LocalDate releaseDate,String description, List<Actor> actors){
@@ -75,11 +75,47 @@ public class Movie{
         }
     }
     
-    public void updateRating(Integer star){
-        ratingDistribution.put(star, ratingDistribution.getOrDefault(star, 0L) + 1);//getordefalult 찾아서 있으면 값,없으면 defalut값 반환
-        rating = ratingPolicy.calculateRating(ratingDistribution);
+   
+    public void addRating(Integer star) {
+        validateRatingRange(star);
+        ratingDistribution.put(star, ratingDistribution.getOrDefault(star, 0L) + 1);
+        calculateAverageRating();
     }
 
+    public void updateRating(Integer oldStar, Integer newStar) {
+        validateRatingRange(oldStar);
+        validateRatingRange(newStar);
+
+        // 이전 점수 카운트 감소 (0 이하로 떨어지지 않게 관리)
+        Long currentCount = ratingDistribution.getOrDefault(oldStar, 0L);
+        if (currentCount > 0) {
+            ratingDistribution.put(oldStar, currentCount - 1);
+        }
+        // 새로운 점수 카운트 증가
+        ratingDistribution.put(newStar, ratingDistribution.getOrDefault(newStar, 0L) + 1);
+        calculateAverageRating();
+    }
+
+    public void deleteRating(Integer star) {
+        validateRatingRange(star);
+        Long currentCount = ratingDistribution.getOrDefault(star, 0L);
+        
+        if (currentCount > 0) {
+            ratingDistribution.put(star, currentCount - 1);
+            calculateAverageRating();
+        }
+    }
+
+
+    private void calculateAverageRating() {
+        this.rating = ratingPolicy.calculateRating(this.ratingDistribution);
+    }
+
+    private void validateRatingRange(Integer star) {
+        if (star == null || star < 1 || star > 5) {
+            throw new IllegalArgumentException("별점은 1점에서 5점 사이여야 합니다.");
+        }
+    }
     
     private void validateConstructor(String name, Director director) {
         if (name == null || name.isBlank()) {
